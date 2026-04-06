@@ -1,6 +1,6 @@
 'use client'
 import axios from "axios";
-import { useEffect, useRef, useCallback, useMemo, memo } from "react";
+import { useEffect, useRef, useCallback, useMemo } from "react";
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { List, useDynamicRowHeight, type RowComponentProps } from "react-window";
 import { useInView } from "react-intersection-observer";
@@ -13,7 +13,7 @@ const ESTIMATED_ITEM_HEIGHT = 500;
 
 import FeedHeader from "../FeedHeader";
 
-const Row = memo(({ index, style, ariaAttributes, posts, userData, handlePostUpdated, loadMoreRef }: any) => {
+const Row = ({ index, style, ariaAttributes, posts, userData, handlePostUpdated, loadMoreRef }: any) => {
     if (index === 0) {
         return (
             <div style={style} {...ariaAttributes}>
@@ -40,9 +40,7 @@ const Row = memo(({ index, style, ariaAttributes, posts, userData, handlePostUpd
             </div>
         </div>
     );
-});
-
-Row.displayName = 'PostRow';
+};
 
 export default function PostList() {
     const queryClient = useQueryClient();
@@ -96,7 +94,7 @@ export default function PostList() {
                 ...oldData,
                 pages: oldData.pages.map((page: any) => ({
                     ...page,
-                    posts: page.posts.map((p: Post) => 
+                    posts: page.posts.map((p: Post) =>
                         p.id === updatedPost.id ? updatedPost : p
                     ),
                 })),
@@ -105,8 +103,8 @@ export default function PostList() {
     }, [queryClient]);
 
     // react-window 2.x uses useDynamicRowHeight for variable heights
-    const dynamicRowHeight = useDynamicRowHeight({ 
-        defaultRowHeight: ESTIMATED_ITEM_HEIGHT 
+    const dynamicRowHeight = useDynamicRowHeight({
+        defaultRowHeight: ESTIMATED_ITEM_HEIGHT
     });
 
     const rowProps = useMemo(() => ({
